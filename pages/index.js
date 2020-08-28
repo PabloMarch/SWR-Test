@@ -7,9 +7,10 @@ const getData = (query) => (
 )
 
 const App = () => {
-  const { data: payload, isValidating, error } = swr('posts', getData)
-  const [validating, setIsValidating] = useState(false)
+  const [dataToFetch, setDataToFetch] = useState(null)
+  const { data: payload, isValidating, error } = swr(dataToFetch, getData)
   const [response, setResponse] = useState(payload?.data)
+  const [validating, setIsValidating] = useState(false)
 
   useEffect(
     () => {
@@ -31,6 +32,12 @@ const App = () => {
       <h1>SWR TEST</h1>
       <h2>Validating: {validating.toString()}</h2>
 
+      <p>
+        <button onClick={() => setDataToFetch('posts')}>Posts</button>
+        <button onClick={() => setDataToFetch('users')}>Users</button>
+        <button onClick={() => setDataToFetch('comments')}>comments</button>
+      </p>
+
       {error && <div>failed to load</div>}
 
       {!response && <div>loading...</div> }
@@ -38,10 +45,10 @@ const App = () => {
       {response && (
         <ul>
           {response.map(
-            ({ id, title, body }) => (
+            ({ id, title, name, body, email }) => (
               <li key={id}>
-                <h3>{title}</h3>
-                <p>{body}</p>
+                <h3>{name || title}</h3>
+                <p>{body || email}</p>
               </li>
             )
           )}
