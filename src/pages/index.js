@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import useSWR from 'swr'
+
+import useFetchCache from '../lib/useFetchCache'
 
 const API = 'https://jsonplaceholder.typicode.com'
 const ITEMS_TO_SHOW = 10
@@ -14,13 +15,6 @@ const getData = (query, options) => (
   }).then(res => res.data)
 )
 
-// SWR HOOK
-const useFetchCache = (key, fetchFn, ...args) => {
-  const { data, error, ...rest } = useSWR(key, fetchFn)
-
-  return { data, error, ...rest }
-}
-
 // APP
 const App = () => {
   const [dataToFetch, setDataToFetch] = useState(null)
@@ -32,6 +26,13 @@ const App = () => {
   const { data, isValidating, error } = useFetchCache(
     pauseFetch ? null : dataToFetch,
     getData
+  )
+
+  useEffect(
+    () => {
+      setDataToFetch('comments')
+    },
+    []
   )
 
   useEffect(
@@ -73,7 +74,7 @@ const App = () => {
         {'Set Custom: '}
         <input
           type="number"
-          value={dataToFetch ? dataToFetch.match(/\d+/g) : 0}
+          value={dataToFetch ? dataToFetch.match(/\d+/g) || 0 : 0}
           onChange={({ target: { value } }) => {
             setDataToFetch(
               () => `posts/${value > 1 ? value : 1}`

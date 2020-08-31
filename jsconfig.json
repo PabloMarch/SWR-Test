@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/api":    ["src/data/tasks"],
+      "@/config": ["src/config"],
+      "@/lib":    ["src/lib/index"],
+      "@/ui":     ["src/components/ui/index"],
+    } 
+  }
+}
